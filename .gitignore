@@ -1,0 +1,7 @@
+# Dataset
+ai/dataset/plantnet_300K/
+# Training outputs
+checkpoints/
+exports/
+runs/
+logs/
