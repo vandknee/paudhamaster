@@ -71,13 +71,19 @@ class PlantNetDataset(Dataset[tuple[Tensor, int]]):
             )
 
         self.root = split_map[split]
+        print(f"Dataset root: {self.root}")
 
         if not self.root.exists():
             raise FileNotFoundError(
                 f"Dataset directory not found: {self.root}"
             )
+        
+        print("Calling _discover_classes()")
 
         self.classes = self._discover_classes()
+        print(
+    f"_discover_classes() returned {len(self.classes)} classes."
+)
         self.class_to_idx = {
             class_name: idx
             for idx, class_name in enumerate(self.classes)
@@ -87,7 +93,12 @@ class PlantNetDataset(Dataset[tuple[Tensor, int]]):
             for class_name, idx in self.class_to_idx.items()
         }
 
+        print("Calling _discover_samples()")
         self.samples = self._discover_samples()
+
+        print(
+    f"_discover_samples() returned {len(self.samples)} samples."
+)
 
         if not self.samples:
             raise RuntimeError(
@@ -117,6 +128,7 @@ class PlantNetDataset(Dataset[tuple[Tensor, int]]):
         return classes
 
     def _discover_samples(self) -> list[tuple[Path, int]]:
+        print("Entering _discover_samples()")
         """Recursively discover all image files.
 
         Returns:
@@ -128,7 +140,7 @@ class PlantNetDataset(Dataset[tuple[Tensor, int]]):
             class_dir = self.root / class_name
             label = self.class_to_idx[class_name]
 
-            for image_path in class_dir.rglob("*"):
+            for image_path in class_dir.iterdir():
                 if (
                     image_path.is_file()
                     and image_path.suffix.lower()
