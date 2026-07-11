@@ -54,11 +54,21 @@ class Config:
     # ------------------------------------------------------------------
     # Dataset
     # ------------------------------------------------------------------
-    dataset_root: Path = Path("dataset")
+    dataset_root: Path = Path(
+        "dataset/plantnet_300K/images"
+    )
 
     train_folder: str = "train"
     validation_folder: str = "val"
     test_folder: str = "test"
+
+    metadata_file: Path = Path(
+        "dataset/plantnet_300K/plantnet300K_species_id_2_name.json"
+    )
+
+    image_metadata_file: Path = Path(
+        "dataset/plantnet_300K/plantnet300K_metadata.json"
+    )
 
     # ------------------------------------------------------------------
     # Output directories
