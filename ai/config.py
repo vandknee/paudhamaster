@@ -87,13 +87,21 @@ class Config:
     # ------------------------------------------------------------------
     # Training
     # ------------------------------------------------------------------
-    epochs: int = 30
-    batch_size: int = 64
+    epochs: int = 2
+    batch_size: int = 8
     num_workers: int = 8
 
     seed: int = 42
 
     mixed_precision: bool = True
+
+    # ------------------------------------------------------------------
+    # Debug / Smoke Testing
+    # ------------------------------------------------------------------
+    debug_mode: bool = True
+
+    debug_train_samples: int = 512
+    debug_val_samples: int = 128
 
     # ------------------------------------------------------------------
     # Device

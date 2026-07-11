@@ -18,7 +18,10 @@ from torch import nn
 from torch.cuda.amp import GradScaler, autocast
 from torch.optim import AdamW
 from torch.optim.lr_scheduler import CosineAnnealingLR
-from torch.utils.data import DataLoader
+from torch.utils.data import (
+    DataLoader,
+    Subset,
+)
 from torch.utils.tensorboard import SummaryWriter
 from tqdm import tqdm
 
@@ -98,6 +101,32 @@ def create_dataloaders(
         config=config,
         split="val",
         transform=get_val_transforms(config),
+    )
+
+    if config.debug_mode:
+
+        logger.warning(
+            "DEBUG MODE ENABLED"
+        )
+
+    train_dataset = Subset(
+        train_dataset,
+        range(
+            min(
+                config.debug_train_samples,
+                len(train_dataset),
+            )
+        ),
+    )
+
+    val_dataset = Subset(
+        val_dataset,
+        range(
+            min(
+                config.debug_val_samples,
+                len(val_dataset),
+            )
+        ),
     )
 
     train_loader = DataLoader(
