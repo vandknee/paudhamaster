@@ -13,7 +13,7 @@ Features:
 """
 
 from __future__ import annotations
-
+import time
 from pathlib import Path
 from typing import Callable
 
@@ -127,26 +127,45 @@ class PlantNetDataset(Dataset[tuple[Tensor, int]]):
 
         return classes
 
-    def _discover_samples(self) -> list[tuple[Path, int]]:
-        print("Entering _discover_samples()")
-        """Recursively discover all image files.
+    def _discover_samples(
+        self,
+    ) -> list[tuple[Path, int]]:
+        """Recursively discover all image files."""
 
-        Returns:
-            List of (image_path, label_index) tuples.
-        """
         samples: list[tuple[Path, int]] = []
 
-        for class_name in self.classes:
+        overall_start = time.perf_counter()
+
+        for index, class_name in enumerate(self.classes):
+
+            class_start = time.perf_counter()
+
             class_dir = self.root / class_name
             label = self.class_to_idx[class_name]
 
+            image_count = 0
+
             for image_path in class_dir.iterdir():
-                if (
-                    image_path.is_file()
-                    and image_path.suffix.lower()
-                    in self._VALID_EXTENSIONS
-                ):
-                    samples.append((image_path, label))
+
+               if image_path.suffix.lower() in self._VALID_EXTENSIONS:
+                    samples.append(
+                        (image_path, label)
+                    )
+                    image_count += 1
+
+            if index % 50 == 0:
+                print(
+                    f"[{index}/{len(self.classes)}] "
+                    f"{class_name} | "
+                    f"{image_count} images | "
+                    f"{time.perf_counter() - class_start:.3f}s"
+                )
+
+        print(
+            f"\nFinished scanning "
+            f"{len(samples)} images "
+            f"in {time.perf_counter() - overall_start:.2f}s"
+        )
 
         return samples
 
