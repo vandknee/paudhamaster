@@ -107,7 +107,7 @@ class Config:
     # ------------------------------------------------------------------
     epochs: int = 30
     batch_size: int = 64
-    num_workers: int = 4
+    num_workers: int = 0
 
     seed: int = 42
 

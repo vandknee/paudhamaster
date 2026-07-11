@@ -91,16 +91,34 @@ def create_dataloaders(
     Returns:
         Training and validation dataloaders.
     """
+    logger.info(
+    "Loading training dataset..."
+)
+
     train_dataset = PlantNetDataset(
         config=config,
         split="train",
         transform=get_train_transforms(config),
     )
 
+    logger.info("Training dataset loaded."),
+    logger.info("Training images: %d",len(train_dataset),)
+    logger.info(
+    "Loading validation dataset..."
+)
+
     val_dataset = PlantNetDataset(
         config=config,
         split="val",
         transform=get_val_transforms(config),
+    )
+    logger.info(
+        "Validation dataset loaded."
+    )
+
+    logger.info(
+        "Validation images: %d",
+        len(val_dataset),
     )
 
     if config.debug_mode:
@@ -128,7 +146,10 @@ def create_dataloaders(
             )
         ),
     )
-
+    logger.info(
+    "Creating training DataLoader..."
+)
+    
     train_loader = DataLoader(
         train_dataset,
         batch_size=config.batch_size,
@@ -137,6 +158,12 @@ def create_dataloaders(
         pin_memory=torch.cuda.is_available(),
         persistent_workers=config.num_workers > 0,
     )
+    logger.info(
+    "Training DataLoader created."
+)
+    logger.info(
+    "Creating validation DataLoader..."
+)
 
     val_loader = DataLoader(
         val_dataset,
@@ -146,6 +173,9 @@ def create_dataloaders(
         pin_memory=torch.cuda.is_available(),
         persistent_workers=config.num_workers > 0,
     )
+    logger.info(
+    "Validation DataLoader created."
+)
 
     return train_loader, val_loader
 
@@ -533,11 +563,29 @@ def main() -> None:
     if device.type == "cuda":
         print_gpu_info()
 
-    train_loader, val_loader = create_dataloaders(config)
+    logger.info(
+        "Creating dataloaders..."
+    )
+
+    train_loader, val_loader = create_dataloaders(
+        config
+    )
+
+    logger.info(
+        "Dataloaders created."
+    )
+
+    logger.info(
+        "Loading MobileNetV3..."
+    )
 
     model = get_model(
         config=config,
         freeze_backbone=args.freeze_backbone,
+    )
+
+    logger.info(
+        "Model loaded."
     )
 
     logger.info(
