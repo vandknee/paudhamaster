@@ -54,22 +54,40 @@ class Config:
     # ------------------------------------------------------------------
     # Dataset
     # ------------------------------------------------------------------
-    dataset_root: Path = Path(
-        "dataset/plantnet_300K/images"
+
+        # ------------------------------------------------------------------
+    # Dataset
+    # ------------------------------------------------------------------
+
+    _kaggle_root = Path(
+        "/kaggle/input/datasets/emreekiz/plantnet-300k/plantnet_300K"
+    )
+
+    _local_root = Path(
+        "dataset/plantnet_300K"
+    )
+
+    dataset_root: Path = (
+        _kaggle_root / "images"
+        if _kaggle_root.exists()
+        else _local_root / "images"
     )
 
     train_folder: str = "train"
     validation_folder: str = "val"
     test_folder: str = "test"
 
-    metadata_file: Path = Path(
-        "dataset/plantnet_300K/plantnet300K_species_id_2_name.json"
+    metadata_file: Path = (
+        _kaggle_root / "plantnet300K_species_id_2_name.json"
+        if _kaggle_root.exists()
+        else _local_root / "plantnet300K_species_id_2_name.json"
     )
 
-    image_metadata_file: Path = Path(
-        "dataset/plantnet_300K/plantnet300K_metadata.json"
+    image_metadata_file: Path = (
+        _kaggle_root / "plantnet300K_metadata.json"
+        if _kaggle_root.exists()
+        else _local_root / "plantnet300K_metadata.json"
     )
-
     # ------------------------------------------------------------------
     # Output directories
     # ------------------------------------------------------------------
